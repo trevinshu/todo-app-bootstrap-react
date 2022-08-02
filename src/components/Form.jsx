@@ -1,21 +1,31 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import Button from './Button';
 import Wrapper from './Wrapper';
+import Error from './Error';
 
 const Form = (props) => {
   const titleRef = useRef();
   const messageRef = useRef();
+
+  const [error, setError] = useState();
 
   const addTodoHandler = (e) => {
     e.preventDefault();
     const titleValue = titleRef.current.value;
     const messageValue = messageRef.current.value;
 
-    props.AddTodo(titleValue, messageValue);
+    if (titleValue.trim().length === 0 || messageValue.trim().length === 0) {
+      setError({
+        message: 'Please enter a title & description',
+      });
+    } else {
+      props.AddTodo(titleValue, messageValue);
+    }
   };
 
   return (
     <Wrapper>
+      {error && <Error>{error.message}</Error>}
       <form onSubmit={addTodoHandler}>
         <div>
           <label className="form-label">Title:</label>
